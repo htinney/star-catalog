@@ -49,7 +49,7 @@ PLANETS = {
             'mass': '0.29 +/-0.08',
             'semimajor': '0.02895 +/-0.00022',
             'orbit': '5.168 +0.051 -0.069',
-        }
+        },
         'b': {
             'confirmed': True,
             'habitable': True,
@@ -58,7 +58,7 @@ PLANETS = {
             'orbit': '11.18418 +0.00068 -0.00074',
             'eccentricity': '0.109 +0.076 -0.068',
             'radius': '1.30 +1.20 -0.62',
-        }
+        },
         'c': {
             'confirmed': True,
             'mass': '7 +/-1',
@@ -112,6 +112,14 @@ ADDITIONS = [
         'dist': '4.01',
         'ra': '18.765',
         'dec': '-63.963278',
+    },
+    {
+        'id': '1000004',
+        'proper': 'LHS 1723',
+        'ci': '1.72',
+        'dist': '5.375',
+        'ra': '5.03261836',
+        'dec': '-6.94621438',
     }
 ]
 
@@ -234,6 +242,42 @@ def print_stars(distance):
 
 def get_rand_color():
     pass
+
+def compute_connectivity_graph(stars, home=0):
+    length = numpy.array(numpy.array([[0 for x in stars] for y in stars]))
+    for i, star in enumerate(stars):
+        name = get_star_name(star)
+        coords = numpy.array(compute_coords_for_star(star))
+        for j, other_star in enumerate(stars):
+            other_coords = numpy.array(compute_coords_for_star(other_star))
+            length_between = numpy.linalg.norm(coords - other_coords)
+            length[i][j] = numpy.linalg.norm(coords - other_coords)
+
+    dist = [math.inf for x in stars]
+    prev = [None for x in stars]
+    dist[home] = 0
+    unvisited = list(range(len(stars)))
+
+    while unvisited:
+        min_dist, min_index, position = min([(dist[index], index, list_position) for list_position, index in enumerate(unvisited)])
+        del unvisited[position]
+        for neighbor in unvisited:
+            new_dist = min_dist + length[min_index][neighbor]
+            if new_dist < dist[neighbor]:
+                dist[neighbor] = new_dist
+                prev[neighbor] = min_index
+
+    return dist, prev
+
+def print_connectivity_graph(stars):
+    dist, prev = compute_connectivity_graph(stars)
+    for i, star in enumerate(stars):
+        path = []
+        curr = prev[i]
+        while curr is not None:
+            path.insert(0, curr)
+            curr = prev[curr]
+        print(f"{get_star_name(stars[i]):<30} {dist[i]:<5} \t {path}")
 
 def show_stars(distance):
 

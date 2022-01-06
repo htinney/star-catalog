@@ -7,6 +7,8 @@ name = "pypi"
 numpy = "*"
 polyscope = "*"
 ipython = "*"
+pexpect = "*"
+plotly = "*"
 
 [dev-packages]
 
