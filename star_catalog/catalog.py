@@ -301,9 +301,9 @@ def show_stars(distance):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='return list of closest stars')
-    parser.add_argument('ly', type=float)
-    parser.add_argument('--show', action='store_true')
-    parser.add_argument('--console', action='store_true')
+    parser.add_argument('ly', type=float, help='Distance from Earth in light years')
+    parser.add_argument('--show', action='store_true', help='Show stars in 3D')
+    parser.add_argument('--console', action='store_true', help='Open interactive session')
 
     args = parser.parse_args()
     print_stars(args.ly)
